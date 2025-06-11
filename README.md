@@ -1,59 +1,184 @@
-# Jsoneditor
+# Angular Json Editor
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
+[![Build Status](https://travis-ci.org/mariohmol/ang-jsoneditor.svg?branch=master)](https://travis-ci.org/mariohmol/ang-jsoneditor)
 
-## Development server
+Angular Json Editor (wrapper for [jsoneditor](https://github.com/josdejong/jsoneditor)). View/Edit Json file with formatting.
 
-To start a local development server, run:
+[StackBlitz template](https://stackblitz.com/edit/ang-jsoneditor)
 
-```bash
-ng serve
+Working with latest Angular 18/19.
+
+![Demo Image](/src/assets/printDemo.png)
+
+## Installation
+
+To install this library with npm, run below command:
+
+```sh
+$ npm install --save jsoneditor ang-jsoneditor
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Example:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```html
+<json-editor [options]="editorOptions" [data]="data" (change)="getData($event)"></json-editor>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Usage
 
-```bash
-ng generate --help
+### Configuration
+
+Import the standalone component as below:
+
+```ts
+import { Component, ViewChild } from '@angular/core';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+
+@Component({
+  selector: 'app-root',
+  template: '<json-editor [options]="editorOptions" [data]="data"></json-editor>',
+  styleUrls: ['./app.component.css'],
+  imports: [JsonEditorComponent]
+})
+export class AppComponent {
+  public editorOptions: JsonEditorOptions;
+  public data: any;
+  // optional
+  @ViewChild(JsonEditorComponent, { static: false }) editor: JsonEditorComponent;
+
+  constructor() {
+    this.editorOptions = new JsonEditorOptions()
+    this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
+    //this.options.mode = 'code'; //set only one mode
+
+    this.data = {"products":[{"name":"car","product":[{"name":"honda","model":[{"id":"civic","name":"civic"},{"id":"accord","name":"accord"},{"id":"crv","name":"crv"},{"id":"pilot","name":"pilot"},{"id":"odyssey","name":"odyssey"}]}]}]}
+  }
+
+}
+```
+Note : For better styling, add below line to your main style.css file
+
+```js
+@import "~jsoneditor/dist/jsoneditor.min.css";
 ```
 
-## Building
 
-To build the project run:
+### Forms
 
-```bash
-ng build
+Build it integrated with ReactiveForms:
+
+```ts
+this.form = this.fb.group({
+  myinput: [this.data]
+});
+```
+```html
+<form  [formGroup]="form" (submit)="submit()">
+    <json-editor [options]="editorOptions2" formControlName="myinput">
+    </json-editor>
+</form>
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Extra Features
 
-## Running unit tests
+Besides all the
+[configuration options](https://github.com/josdejong/jsoneditor/blob/master/docs/api.md)
+from the original jsoneditor, Angular Json Editor supports one additional option:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+_expandAll_ - to automatically expand all nodes upon json loaded with the _data_ input.
 
-```bash
-ng test
+# Troubleshoot
+
+If you have issue with the height of the component, you can try one of those solutions:
+
+When you import CSS:
+
+```css
+@import "~jsoneditor/dist/jsoneditor.min.css";
+textarea.jsoneditor-text{min-height:350px;}
 ```
 
-## Running end-to-end tests
+Or Customizing the CSS:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```css
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 500px;
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Or  as a inner style in component:
 
-## Additional Resources
+```html
+<json-editor class="col-md-12" #editorExample style="min-height: 300px;" [options]="editorOptionsData" [data]="dataStructure"></json-editor>
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+For code view you can change the height using this example:
+```css
+.ace_editor.ace-jsoneditor {
+  min-height: 500px;
+}
+```
+
+Use debug mode to see in your console the data and options passed to jsoneditor. Copy this and paste in your issue when reporting bugs.
+
+```html
+<json-editor [debug]="true" [options]="editorOptionsData" [data]="dataStructure"></json-editor>
+```
+
+## JSONOptions missing params
+
+If you find youself trying to use an custom option that is not mapped here, you can do:
+
+```ts
+let editorOptions: JsonEditorOptions = new JsonEditorOptions(); (<any>this.editorOptions).templates = [{menu options objects as in json editor documentation}]
+```
+
+See the [issue](https://github.com/mariohmol/ang-jsoneditor/issues/57)
+
+## Internet Explorer
+
+If you want to support IE, please follow this guide:
+* https://github.com/mariohmol/ang-jsoneditor/issues/44#issuecomment-508650610
+
+## Multiple editors
+
+To use multiple jsoneditors in your view you cannot use the same editor options.
+
+You should have something like:
+
+```html
+<div *ngFor="let prd of data.products" class="w-100-p p-24" >
+  <json-editor [options]="makeOptions()" [data]="prd" (change)="showJson($event)"></json-editor>
+</div>
+```
+
+```ts
+makeOptions = () => {
+  return new JsonEditorOptions();
+}
+```
+
+# Demo
+
+Demo component files are included in Git Project.
+
+Demo Project with a lot of different implementations (ngInit, change event and others):
+[https://github.com/mariohmol/ang-jsoneditor/tree/master/src/app/demo)
+
+When publishing it to npm, look over this docs: https://docs.npmjs.com/misc/developers
+
+# Collaborate
+
+Fork, clone this repo and install dependencies.
+This project just works with webpack 4 (dont change to 5):
+
+```sh
+npm i -g rimraf
+npm i
+```
+
+# License
+MIT(./LICENSE)
