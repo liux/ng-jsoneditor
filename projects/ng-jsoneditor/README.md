@@ -6,7 +6,7 @@ Angular Json Editor (wrapper for [jsoneditor](https://github.com/josdejong/jsone
 
 [StackBlitz template](https://stackblitz.com/edit/ang-jsoneditor)
 
-Working with latest Angular 18/19.
+Supports angular 19.
 
 ![Demo Image](/src/assets/printDemo.png)
 
@@ -15,7 +15,7 @@ Working with latest Angular 18/19.
 To install this library with npm, run below command:
 
 ```sh
-$ npm install --save jsoneditor ang-jsoneditor
+$ npm install --save jsoneditor @livx/ng-jsoneditor
 ```
 
 Example:
