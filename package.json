@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build ng-jsoneditor",
     "watch": "ng build --watch --configuration development",
+    "publish": "npm publish ./dist/ng-jsoneditor --access public",
     "test": "ng test"
   },
   "private": true,
