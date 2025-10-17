@@ -1,6 +1,6 @@
 {
   "name": "@livx/ng-jsoneditor",
-  "version": "0.0.3",
+  "version": "20.0.0",
     "license": "MIT",
   "homepage": "https://github.com/liux/ng-jsoneditor",
   "repository": {
@@ -8,8 +8,8 @@
     "url": "https://github.com/liux/ng-jsoneditor"
   },
   "peerDependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0",
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
     "jsoneditor": "*"
   },
   "dependencies": {
